@@ -3,16 +3,23 @@ body {
   font-size: 30px;
 }
 
-.row {
+.field {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
+  width: 405px;
+  height: 405px;
   cursor: url("../img/hammer.png"), auto;
 }
 
 .square {
   border: white solid 1px;
+  border-bottom: 0;
   background-color: black;
-  width: 100px;
-  height: 100px;
+  width: calc(25% - 3px);
+  height: calc(25% - 2px);
+}
+
+.hidden {
+  display: none;
 }

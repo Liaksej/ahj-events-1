@@ -1,28 +1,47 @@
-import image from "../img/goblin.png";
-import { negativClick } from "./clickEvent.js";
+import { Score } from "./Score";
 
 export class GoblinMover {
   constructor(fieldLength) {
-    this.fieldLength = fieldLength;
+    this.fielIndexes = Array.from({ length: fieldLength ** 2 }, (_, i) => i);
+    this.score = new Score();
+    this.field = document.body.firstChild;
+    this.cell = null;
   }
 
-  randomField() {
-    return Math.floor(Math.random() * (this.fieldLength * this.fieldLength));
+  clickEvent() {
+    const element = document.body;
+    element.addEventListener("click", (event) => {
+      if (
+        event.target.classList.contains("goblin") &&
+        !event.target.classList.contains("hidden")
+      ) {
+        event.target.classList.add("hidden");
+        if (this.score.score > 1) {
+          this.score.updateScore();
+        } else {
+          this.score.printScore();
+        }
+      }
+    });
   }
 
   mover() {
-    const goblinElement = document.createElement("img");
-    goblinElement.src = image;
-    goblinElement.width = 100;
-    goblinElement.height = 100;
     const timeoutID = setInterval(() => {
-      const negativeClick = negativClick();
-      if (negativeClick) {
+      if (
+        this.cell &&
+        !this.cell.firstElementChild.classList.contains("hidden")
+      ) {
+        this.score.failCounter();
+        this.cell.firstElementChild.classList.add("hidden");
+      }
+      if (this.score.failScore === 5) {
+        document.body.innerHTML = "Game Over";
         clearInterval(timeoutID);
         return;
       }
-      let cell = document.querySelector(`.i${this.randomField()}`);
-      cell.appendChild(goblinElement);
+      let cellIndex = Math.floor(Math.random() * this.fielIndexes.length);
+      this.cell = this.field.children[cellIndex];
+      this.cell.firstElementChild.classList.remove("hidden");
     }, 1000);
   }
 }
